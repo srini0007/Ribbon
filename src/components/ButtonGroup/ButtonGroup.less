@@ -1,0 +1,30 @@
+@import "../../common/vars";
+
+.ribbon-toggle-group {
+    background-color: var(--background-group-color);
+    display: flex;
+    flex-flow: column wrap;
+    //max-height: 90px;
+    border: 1px solid var(--borderColor);
+    width: auto;
+
+    .ribbon-icon-button, .ribbon-tool-button {
+        height: 20px;
+        margin: 1px;
+        background-color: inherit;
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        line-height: 1.6;
+
+        & > * {
+            height: 18px;
+        }
+    }
+}
+
+.ribbon-dropdown {
+    .ribbon-toggle-group {
+        background-color: inherit!important;
+    }
+}

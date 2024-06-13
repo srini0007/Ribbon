@@ -1,0 +1,99 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.ribbon-icon-button {
+    .init-button()
+}
+
+.ribbon-icon-button {
+    height: 24px;
+    width: auto;
+    margin: 0;
+    display: inline-flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    padding: 0 4px;
+
+    .caption, .ribbon-icon {
+        display: block;
+    }
+
+    .caption {
+        font-size: 11px;
+    }
+
+    .ribbon-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        * {
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            font-size: 14px;
+        }
+    }
+
+    .ribbon-icon + .caption, .caption + .ribbon-icon {
+        margin-left: 4px;
+    }
+
+    [class*=mif-] {
+        vertical-align: inherit;
+    }
+}
+
+.ribbon-icon-button {
+    &.dropdown-toggle {
+        padding-right: 4px !important;
+
+        &::before {
+            display: none;
+        }
+
+        &::after {
+            content: "";
+            display: block;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 0 4px 4px;
+            border-color: transparent transparent var(--dropdownToggleColor) transparent;
+            z-index: 1;
+        }
+    }
+
+    &.drop-active {
+        border-color: var(--itemBorderColor);
+        background-color: var(--itemHoverBackground);
+    }
+}
+
+.ribbon-icon-button {
+    &:hover:enabled, &:not(.disabled):hover {
+        border-color: var(--itemBorderColor);
+        background-color: var(--itemHoverBackground);
+    }
+}
+
+.ribbon-icon-button {
+    &:active, &.active {
+        border-color: var(--itemActiveBorderColor);
+        background-color: var(--itemActiveBackground) !important;
+        color: var(--textActiveColor);
+    }
+}
+
+.ribbon-menu {
+    .active-container {
+        .ribbon-icon-button {
+            border-color: var(--itemActiveBorderColor);
+            background-color: var(--itemActiveBackground) !important;
+            color: var(--textActiveColor);
+        }
+    }
+}

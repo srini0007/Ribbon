@@ -1,0 +1,79 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+.ribbon-tool-button {
+    .init-button()
+}
+
+.hidden{
+    display: none;
+}
+
+.ribbon-tool-button {
+    width: 24px;
+    height: 24px;
+    padding: 0 2px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    * {
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        font-size: 14px;
+    }
+
+    &.dropdown-toggle {
+        padding-right: 2px !important;
+
+        &::before {
+            display: none;
+        }
+
+        &::after {
+            content: "";
+            display: block;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 0 4px 4px;
+            border-color: transparent transparent var(--dropdownToggleColor) transparent!important;
+            z-index: 1;
+        }
+    }
+
+    &.drop-active {
+        border-color: var(--itemBorderColor);
+        background-color: var(--itemHoverBackground);
+    }
+}
+
+.ribbon-tool-button {
+    &:hover:enabled, &:not(.disabled):hover {
+        border-color: var(--itemBorderColor);
+        background-color: var(--itemHoverBackground);
+    }
+}
+
+.ribbon-tool-button {
+    &:active, &.active {
+        border-color: var(--itemActiveBorderColor);
+        background-color: var(--itemActiveBackground) !important;
+        color: var(--textActiveColor);
+    }
+}
+
+.ribbon-menu {
+    .active-container {
+        .ribbon-tool-button {
+            border-color: var(--itemActiveBorderColor);
+            background-color: var(--itemActiveBackground) !important;
+            color: var(--textActiveColor);
+        }
+    }
+}

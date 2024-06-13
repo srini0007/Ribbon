@@ -1,0 +1,211 @@
+@import "../../common/vars";
+@import "../../common/mixins";
+
+:root {
+    --background-color: #f5f6f7;
+    --background-active-color: #f5f6f7;
+    --background-group-color: #ffffff;
+    --textColor: #000000;
+    --borderColor: #dadbdc;
+    --itemBorderColor: #a4cef9;
+    --itemActiveBorderColor: #1979ca;
+    --itemActiveBackground: rgba(red(#a4cef9), green(#a4cef9), blue(#a4cef9), .8);
+    --itemHoverBackground: rgba(red(#a4cef9), green(#a4cef9), blue(#a4cef9), .2);
+    --dropdownBackground: #fbfcfd;
+    --dropdownDividerColor: #f1f1f1;
+    --dropdownShadowColor: rgba(227, 228, 229, .7);
+    --dropdownToggleColor: #000000;
+    --staticMenuColor: #1979ca;
+    --staticTextColor: #ffffff;
+    --scrollbar-thumb-color: rgba(0, 0, 0,.15);
+    --scrollbar-track-color: rgba(0, 0, 0, .5);
+}
+
+.dark-mode {
+    --background-color: #22272e;
+    --background-active-color: #22272e;
+    --background-group-color: #333a44;
+    --textColor: #adadad;
+    --textActiveColor: #ffffff;
+    --borderColor: #444c56;
+    --itemBorderColor: #a4cef9;
+    --itemActiveBorderColor: #1979ca;
+    --itemActiveBackground: rgba(red(#a4cef9), green(#a4cef9), blue(#a4cef9), .8);
+    --itemHoverBackground: rgba(red(#a4cef9), green(#a4cef9), blue(#a4cef9), .2);
+    --dropdownBackground: #22272e;
+    --dropdownDividerColor: #444c56;
+    --dropdownShadowColor: rgba(68, 76, 86, .7);
+    --dropdownToggleColor: #ffffff;
+    --staticMenuColor: #1979ca;
+    --staticTextColor: #ffffff;
+    --scrollbar-thumb-color: rgba(0, 0, 0,.15);
+    --scrollbar-track-color: rgba(0, 0, 0, .5);
+}
+
+*,
+*::before,
+*::after { box-sizing:border-box; }
+
+.no-overflow {
+    overflow: hidden;
+}
+
+.ribbon-menu {
+    display: block;
+    position: relative;
+    background-color: var(--background-color);
+    color: var(--textColor);
+    overflow-x: scroll;
+
+    div {
+        position: relative;
+    }
+}
+
+.ribbon-menu {
+    .tabs-holder {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        list-style: none inside;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        z-index: 1;
+        border-bottom: 1px solid var(--borderColor);
+    }
+
+    .tabs-holder {
+        li, a {
+            display: block;
+            height: 24px;
+            line-height: 24px;
+        }
+
+        li {
+            color: var(--textColor);
+            background-color: var(--background-color);
+            border-left: 1px solid transparent;
+            border-right: 1px solid transparent;
+            border-bottom: 1px solid var(--borderColor);
+            cursor: pointer;
+
+            &:hover {
+                border-left-color: var(--borderColor);
+                border-right-color: var(--borderColor);
+                border-top-color: var(--borderColor);
+            }
+        }
+
+        li + li {
+            margin-left: 3px;
+        }
+
+        a {
+            text-decoration: none;
+            padding: 0 14px;
+            font-size: 12px;
+            background-color: inherit;
+            color: inherit;
+        }
+
+        .active {
+            background-color: var(--background-active-color);
+            border: 1px solid var(--borderColor);
+            border-bottom-color: transparent;
+        }
+
+        .static {
+            background-color: var(--staticMenuColor);
+            color: var(--staticTextColor);
+        }
+    }
+}
+
+.ribbon-menu {
+    .content-holder {
+        display: block;
+        position: relative;
+        background-color: inherit;
+        border-left: none;
+        border-right: none;
+    }
+
+    .content-holder {
+        .ribbon-section {
+            display: none;
+            padding: 4px 4px;
+            border-bottom: 1px solid var(--borderColor);
+            justify-content: flex-start;
+            flex-shrink: 0;
+
+            &.active {
+                display: flex;
+            }
+        }
+
+        .ribbon-divider {
+            display: block;
+            position: relative;
+            margin: 0 4px;
+            height: 100%!important;
+            width: 1px;
+            background-color: var(--borderColor);
+        }
+
+        .group {
+            padding: 0 4px 24px;
+            display: flex;
+            cursor: default;
+            background-color: inherit;
+            position: relative;
+            align-items: flex-start;
+            align-content: flex-start;
+            flex-shrink: 0;
+
+            &:nth-child(1):last-child {
+                flex-basis: 100%;
+            }
+
+            .title {
+                display: block;
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                line-height: 24px;
+                height: 20px;
+                font-size: 11px;
+                text-align: center;
+                border-top: 1px solid var(--borderColor);
+                white-space: nowrap;
+            }
+
+            & > *:not(.title) {
+                margin: 2px;
+            }
+        }
+
+        .group + .group {
+            border-left: 1px solid var(--borderColor);
+        }
+    }
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--scrollbar-thumb-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-track-color);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+}
