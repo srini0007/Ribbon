@@ -44,7 +44,7 @@ function revert(element:any){
         }
     }
     else if(element.classList.contains('ribbon-icon-button') || element.classList.contains('ribbon-tool-button') || element.classList.contains('check-group') || element.classList.contains('radio-group') || element.classList.contains('title')){
-
+        
     }
     else{
         let n=element.childElementCount;

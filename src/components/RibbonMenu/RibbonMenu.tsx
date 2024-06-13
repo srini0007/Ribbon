@@ -109,12 +109,13 @@ class RibbonMenu extends React.Component<IRibbonMenuProps, IRibbonMenuState> {
 
     onTabClick(e: any){
         const staticTab = e.target.getAttribute('data-static') === 'true'
-        const label = e.target.getAttribute('data-label')
-
+        let label = e.target.getAttribute('data-label')
         if (staticTab) {
             return
         }
-
+        if(label===null){
+            label=e.target.firstChild.getAttribute('data-label');
+        }
         this.setState({
             activeTab: label
         })
