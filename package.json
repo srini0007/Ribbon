@@ -1,12 +1,11 @@
 {
-  "name": "@olton/ribbon-menu",
+  "name": "ribbon-menu-new",
   "description": "Ribbon Menu for React (Vite, TypeScript)",
-  "version": "0.1.15",
+  "version": "0.1.17",
   "license": "MIT",
-  "author": "Serhii Pimenov <serhii@pimenov.com.ua> (https://pimenov.com.ua)",
+  "author": "srini",
   "keywords": [
     "react",
-    "metroui",
     "ribbon",
     "ribbon-menu",
     "js",
@@ -32,23 +31,9 @@
     "build": "tsc && vite build",
     "pub": "npm run build && npm version patch && npm publish --access public"
   },
-  "funding": [
-    {
-      "type": "paypal",
-      "url": "serhii@pimenov.com.ua"
-    },
-    {
-      "type": "patreon",
-      "url": "https://www.patreon.com/metroui"
-    },
-    {
-      "type": "subscription",
-      "url": "https://korzh.com/metroui#licensing"
-    }
-  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/olton/ribbon-menu.git"
+    "url": "https://github.com/srini0007/ribbon-menu.git"
   },
   "dependencies": {
     "@metroui/icons": "^0.1.1",

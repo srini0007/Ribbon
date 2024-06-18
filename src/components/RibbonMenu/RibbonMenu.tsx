@@ -77,6 +77,7 @@ class RibbonMenu extends React.Component<IRibbonMenuProps, IRibbonMenuState> {
         // @ts-ignore
         return Children.map(children, (el: React.ReactElement, index)=>{
             const {mode, label} = el.props
+         
             return (
                 <RibbonTabNav
                     key={index}
@@ -98,9 +99,9 @@ class RibbonMenu extends React.Component<IRibbonMenuProps, IRibbonMenuState> {
 
         return Children.map(children, (el, index)=>{
             // @ts-ignore
-            const {label, children,ismin} = el.props
+            const {label, children,ismin,limit} = el.props
             return (
-                <RibbonTab key={index} ismin={ismin} label={label.toLowerCase()} active={activeTab === label.toLowerCase()}>
+                <RibbonTab limit={limit} key={index} ismin={ismin} label={label.toLowerCase()} active={activeTab === label.toLowerCase()}>
                     {children}
                 </RibbonTab>
             )
