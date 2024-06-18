@@ -22,7 +22,7 @@ const RibbonToolButton: FC<IRibbonToolButtonProps> = ({caption,hotkey = "", chil
         "ribbon-tool-button",
         className
     )
-    console.log("max",onClick);
+
     return (
         <button data-original={'tool-button'} data-onclick={onClick?onClick.toString():''}   className={classes} title={title} {...rest} onClick={onClick} data-hotkey={hotkey}>
             {children}

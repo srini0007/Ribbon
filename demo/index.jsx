@@ -26,7 +26,11 @@ import { useRef } from "react";
 const App = () => {
     
      const [min,setMin] = useState(false);
- 
+     const [lim,setLim] = useState(-100);
+     window.addEventListener('resize',()=>{
+        setLim(window.innerWidth-276);
+     })
+    
     return (
         <section className={`container-fluid`}>
             
@@ -35,7 +39,7 @@ const App = () => {
                     <div>
                         <RibbonMenu>
                             <RibbonTab   mode="static" label="Home"></RibbonTab>
-                            <RibbonTab  label="File" ismin={min} limit={100} >
+                            <RibbonTab  label="File" ismin={min} limit={lim} >
                                 <RibbonTabGroup title="Push Buttons" >
                                     <RibbonButton ismin={min} caption="Mail" icon="mif-envelop" title="Write Mail" onClick={()=>{alert('Mail Button was Clicked!')}}/>
                                     <RibbonButton ismin={min} caption="Share" icon="mif-share"/>
@@ -97,54 +101,24 @@ const App = () => {
                                         </RibbonDropdown>
                                     </RibbonTabSubGroup>
                                 </RibbonTabGroup>
-{/* 
-                                <RibbonTabGroup title="Split Button">
-                                    <RibbonSplitButton caption="Options" icon="mif-cog" buttonClassName="disabled">
-                                        <RibbonDropdownMenu>
-                                            <RibbonDropdownItem caption="Windows 10"/>
-                                            <RibbonDropdownItem caption="Windows 11"/>
-                                            <RibbonDropdownItem caption="Office 365"/>
-                                            <RibbonDropdownDivider/>
-                                            <RibbonDropdownCheckItem checked caption="Windows 10"/>
-                                            <RibbonDropdownCheckItem checked caption="Windows 11"/>
-                                            <RibbonDropdownCheckItem checked caption="Office 365"/>
-                                            <RibbonDropdownDivider/>
-                                        </RibbonDropdownMenu>
-                                    </RibbonSplitButton>
-                                </RibbonTabGroup> */}
 
                                 <RibbonTabGroup title="Button Groups">
 
-                                    <RibbonButtonGroup radio ismin={min}  style={{width: "200px", maxHeight: "88px", }}>
-                                        <RibbonIconButton caption="List" icon="mif-list"/>
+                                    <RibbonButtonGroup  radio ismin={min}    style={{width: "200px", maxHeight: "88px", }}>
+                                        <RibbonIconButton caption="List" icon="mif-list" />
                                         <RibbonIconButton caption="Gear" icon="mif-cog"/>
                                         <RibbonIconButton caption="Barcode" icon="mif-barcode"/>
                                         <RibbonIconButton caption="Bell" icon="mif-bell"/>
                                         <RibbonIconButton caption="Cast" icon="mif-cast"/>
                                         <RibbonIconButton caption="Calculator" icon="mif-calculator2"/>
                                     </RibbonButtonGroup>
-
-                                    <RibbonButtonGroup ismin={min} style={{width: "100px"}}>
-                                        <RibbonIconButton  caption="Italic" icon="mif-italic" title="Set italic text"/>
-                                        <RibbonIconButton  caption="Bold" icon="mif-bold"/>
-                                        <RibbonIconButton caption="Underline" icon="mif-underline"/>
-                                    </RibbonButtonGroup>
-
+                                    
                                     <RibbonButtonGroup ismin={min} active={[1, 3]} style={{width: "74px", display: "flex", flexFlow: "row", justifyContent: "center"}}>
                                         <RibbonToolButton  caption="Italic" icon="mif-italic" title="Set italic text"/>
                                         <RibbonToolButton onClick={()=>alert("his")} caption="Bold" icon="mif-bold"/>
                                         <RibbonToolButton caption="Underline" icon="mif-underline" hotkey="ctrl+h"/>
                                     </RibbonButtonGroup>
-                                    <RibbonButtonGroup ismin={min} active={[1, 3]} style={{width: "74px", display: "flex", flexFlow: "row", justifyContent: "center"}}>
-                                        <RibbonToolButton caption="Italic" icon="mif-italic" title="Set italic text"/>
-                                        <RibbonToolButton caption="Bold" icon="mif-bold"/>
-                                        <RibbonToolButton caption="Underline" icon="mif-underline" hotkey="ctrl+h"/>
-                                    </RibbonButtonGroup>
-                                     <RibbonButtonGroup ismin={min} active={[1, 3]} style={{width: "74px", display: "flex", flexFlow: "row", justifyContent: "center"}}>
-                                        <RibbonToolButton caption="Italic" icon="mif-italic" title="Set italic text"/>
-                                        <RibbonToolButton caption="Bold" icon="mif-bold"/>
-                                        <RibbonToolButton caption="Underline" icon="mif-underline" hotkey="ctrl+h"/>
-                                    </RibbonButtonGroup>
+
                                     <RibbonIconButton caption="Gear" icon="mif-cog" onClick={()=>alert("hi")}/>
                                     <RibbonDropdown>
                                             <RibbonIconButton caption="Apps" icon="mif-apps"/>
@@ -203,7 +177,10 @@ const App = () => {
                                 </RibbonTabGroup>
                                     <RibbonMinimize isMinimized={min} onClick={()=>setMin(prev=>!prev)}/>
                             </RibbonTab>
-                            <RibbonTab label="Edit"></RibbonTab>
+                            <RibbonTab label="Edit">
+
+                                <RibbonButton caption="sa" />
+                            </RibbonTab>
                             <RibbonTab label="View"></RibbonTab>
                         </RibbonMenu>
                     </div>

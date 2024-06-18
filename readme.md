@@ -1,7 +1,7 @@
 # Ribbon Menu for React
 
 ![](preview.png)
-![](preview-dark.png)
+
 
 ## Using
 Root element

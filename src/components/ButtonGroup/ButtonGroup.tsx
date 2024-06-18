@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createRef } from "react";
 import classNames from "classnames";
 
 import "./ButtonGroup.less"
@@ -12,7 +12,8 @@ export interface IRibbonButtonGroupProps {
     classNameButton?: string,
     style?: any,
     onButtonClick?: any,
-    ismin?:boolean
+    ismin?:boolean,
+    
 }
 
 export interface IRibbonButtonGroupState {
@@ -26,6 +27,7 @@ class RibbonButtonGroup extends React.Component<IRibbonButtonGroupProps, IRibbon
         radio: false,
         buttons: [],
     }
+    private divRef = createRef<HTMLDivElement>();
 
     constructor(props: IRibbonButtonGroupProps){
         super(props);
@@ -74,11 +76,35 @@ class RibbonButtonGroup extends React.Component<IRibbonButtonGroupProps, IRibbon
             });
         }
         if (typeof onButtonClick === 'function')
-            onButtonClick(button);
+            onButtonClick(index);
     }
-
+  
+    componentDidUpdate(prevProps: Readonly<IRibbonButtonGroupProps>, prevState: Readonly<IRibbonButtonGroupState>, snapshot?: any): void {
+        if (this.divRef.current) {
+            const divElement = this.divRef.current; 
+            const {radio} =this.state;
+            const childElements = divElement.children;
+            const newButtons: number[] = [];
+            Array.from(childElements).forEach((child,index) => {   //assuming there will be no 2 active for radio
+              if(child.classList.contains('active')){
+                newButtons.push(index+1)
+              }
+              
+            });
+            if (JSON.stringify(newButtons) !== JSON.stringify(this.state.buttons)) {
+                this.setState({ buttons: newButtons });
+              }
+        }
+    }
+    // componentDidUpdate(prevProps: Readonly<IRibbonButtonGroupProps>, prevState: Readonly<IRibbonButtonGroupState>, snapshot?: any): void {
+    //     if (prevProps.setActive !== this.props.setActive) {
+    //         this.setState({
+    //           buttons: [this.props.setActive],
+    //         });
+    //       }
+    // }
     render(){
-        let {children, className, classNameActive, classNameButton, style,ismin} = this.props;
+        let {children, className, classNameActive, classNameButton, style,ismin,onButtonClick} = this.props;
         const {buttons, radio} = this.state;
         const classes = classNames(
             "ribbon-toggle-group",
@@ -86,11 +112,12 @@ class RibbonButtonGroup extends React.Component<IRibbonButtonGroupProps, IRibbon
             className,
             radio ? 'radio-group' : 'check-group'
         )
+        
         if(ismin){
             style={display:'flex',flexDirection:'row'};
         }
         return (
-            <div data-original={'button-group'} className={classes} style={ style}>
+            <div ref={this.divRef} data-original={'button-group'} data-onclick={onButtonClick?onButtonClick.toString():''} className={classes} style={ style}>
                 {
                     React.Children.map(children, (button: any, index: number) => {
                         const props = button.props
@@ -101,6 +128,7 @@ class RibbonButtonGroup extends React.Component<IRibbonButtonGroupProps, IRibbon
                             classNameButton,
                             isActive ? !classNameActive ? ' active ' : classNameActive : ''
                         )
+                        // const {onClick} = props
                         return (
                             React.cloneElement(button, {
                                 className: buttonClasses,

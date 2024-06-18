@@ -16,7 +16,8 @@ function ExpandMore({item}:IExpandMore) {
         // console.log(arr);
         let active=[];
         let cur_elements=[];
-        let func_elements=[];
+        let func_elements:any[]=[];
+
         // console.log(arr,item,"ga")
         for(let i=0;i<n;i++){
           if(arr[i].classList.contains('active')){
@@ -32,10 +33,14 @@ function ExpandMore({item}:IExpandMore) {
           func_elements.push(x);
           cur_elements.push(arr[i]);
         }
-    
+        
+        let onButtonClick=undefined;
+        if(item.dataset.onclick!==''){
+          onButtonClick=eval(item.dataset.onclick);
+        }  
         temp = (
           <>
-        <RibbonButtonGroup active={active} radio>
+        <RibbonButtonGroup active={active} radio onButtonClick={onButtonClick}>
             {cur_elements.map((cur,ind)=>(
               <RibbonDropdownItem caption={cur.children[0].innerText} key={ind} onClick={func_elements[ind]}/>
             ))}
@@ -51,7 +56,8 @@ function ExpandMore({item}:IExpandMore) {
         // console.log(arr);
         let active=[];
         let cur_elements=[]
-        let func_elements=[];
+        let func_elements:any[]=[];
+
         for(let i=0;i<n;i++){
           if(arr[i].classList.contains('active')){
             active.push(i+1);
@@ -66,9 +72,13 @@ function ExpandMore({item}:IExpandMore) {
           cur_elements.push(arr[i]);
           
         }
+        let onButtonClick=undefined;
+        if(item.dataset.onclick!==''){
+          onButtonClick=eval(item.dataset.onclick);
+        }  
         
        temp = (<>
-       <RibbonButtonGroup active={active} >
+       <RibbonButtonGroup active={active} onButtonClick={onButtonClick}>
             {cur_elements.map((cur,ind)=>(
               <RibbonDropdownItem caption={cur.children[0].innerText} key={ind} onClick={func_elements[ind]}/>
             ))}
