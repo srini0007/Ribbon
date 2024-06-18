@@ -120,15 +120,19 @@ const useMinimization = (ismin: boolean,limit:number):any[]  => {
                   let temp:any[]=[];
                   traverse(childeNode,temp);
                   changeClass(childeNode);
-
+                  let hasElement:boolean=false;
                   for(let i=0;i<temp.length;i++){
                       aggWidth+=temp[i].offsetWidth;
                       if(aggWidth>range){
                           temp[i].remove();
                           indiv_ele.push(temp[i]);
+                          hasElement=true;
                       }
                   }
-                  indiv_ele.push(childeNode.children[childeNode.childElementCount-1]);
+                  if(hasElement){
+
+                    indiv_ele.push(childeNode.children[childeNode.childElementCount-1]);
+                  }
                   // portalElements.push(childeNode);
 
                   // childeNode.remove();
@@ -144,6 +148,7 @@ const useMinimization = (ismin: boolean,limit:number):any[]  => {
         portalElements.forEach((to_remove:any)=>{
             to_remove.remove();
         })
+        console.log("second");
         setHiddenEles(portalElements);
         setExtraElements(indiv_ele);
       }
@@ -154,6 +159,7 @@ const useMinimization = (ismin: boolean,limit:number):any[]  => {
         setExtraElements([]);
         setIsExpReg(false);
       }
+      
     }, [ismin, menuRef,limit]);
     return [menuRef, extraElements,hiddenEls, isExpanderReq,needed ];
   };

@@ -57,7 +57,7 @@ const revert=(element:any)=>{
 
 
 const reAddition = (extraElements:any[],hiddenEls:any[],menuRef:any)=>{
-
+    console.log("first",extraElements,hiddenEls);
     extraElements.forEach((el: any) => {
         // console.log(d,d.children[menuRef.current.childElementCount -hasDropdown - 2 -1],"deb");
         if (menuRef.current?.children[menuRef.current.childElementCount  - 2 -1]) {
