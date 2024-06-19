@@ -56,7 +56,7 @@ class RibbonDropdown extends React.Component<IRibbonDropdownProps, IRibbonDropdo
 
         if (position === "fixed") {
             dropObject.style.top = (rectDropdown.top + rectDropdown.height) + "px"
-            dropObject.style.left = (rectDropdown.left) + "px"
+            dropObject.style.left = (rectDropdown.left-180) + "px"
         }
 
         this.setState({
