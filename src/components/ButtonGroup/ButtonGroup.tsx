@@ -2,6 +2,8 @@ import React, { createRef } from "react";
 import classNames from "classnames";
 
 import "./ButtonGroup.less"
+import useMin from "../../hooks/useMin";
+import withMin from "../../hocs/withMin";
 
 export interface IRibbonButtonGroupProps {
     active?: number | number[],
@@ -12,6 +14,7 @@ export interface IRibbonButtonGroupProps {
     classNameButton?: string,
     style?: any,
     onButtonClick?: any,
+    notDropdownGroup?:boolean,
     ismin?:boolean,
     
 }
@@ -19,6 +22,7 @@ export interface IRibbonButtonGroupProps {
 export interface IRibbonButtonGroupState {
     radio: boolean,
     buttons: any,
+    
 }
 
 class RibbonButtonGroup extends React.Component<IRibbonButtonGroupProps, IRibbonButtonGroupState> {
@@ -32,7 +36,8 @@ class RibbonButtonGroup extends React.Component<IRibbonButtonGroupProps, IRibbon
     constructor(props: IRibbonButtonGroupProps){
         super(props);
 
-        const {active, radio = false,ismin=false } = props
+        const {active, radio = false} = props
+        // console.log(,radio,'e');
         const pressedButtons = [];
 
         if (typeof active !== "undefined") {
@@ -48,7 +53,7 @@ class RibbonButtonGroup extends React.Component<IRibbonButtonGroupProps, IRibbon
         this.state = {
             radio,
             buttons: pressedButtons || [],
-            
+
         };
 
         this.buttonClick = this.buttonClick.bind(this);
@@ -96,15 +101,9 @@ class RibbonButtonGroup extends React.Component<IRibbonButtonGroupProps, IRibbon
               }
         }
     }
-    // componentDidUpdate(prevProps: Readonly<IRibbonButtonGroupProps>, prevState: Readonly<IRibbonButtonGroupState>, snapshot?: any): void {
-    //     if (prevProps.setActive !== this.props.setActive) {
-    //         this.setState({
-    //           buttons: [this.props.setActive],
-    //         });
-    //       }
-    // }
+  
     render(){
-        let {children, className, classNameActive, classNameButton, style,ismin,onButtonClick} = this.props;
+        let {children, className, classNameActive, classNameButton, style,onButtonClick,ismin,notDropdownGroup=false} = this.props;
         const {buttons, radio} = this.state;
         const classes = classNames(
             "ribbon-toggle-group",
@@ -112,8 +111,8 @@ class RibbonButtonGroup extends React.Component<IRibbonButtonGroupProps, IRibbon
             className,
             radio ? 'radio-group' : 'check-group'
         )
-        
-        if(ismin){
+       
+         if(notDropdownGroup && ismin){
             style={display:'flex',flexDirection:'row'};
         }
         return (
@@ -142,5 +141,4 @@ class RibbonButtonGroup extends React.Component<IRibbonButtonGroupProps, IRibbon
         )
     }
 }
-
-export default RibbonButtonGroup
+export default withMin(RibbonButtonGroup);

@@ -1,34 +1,19 @@
-import { useLayoutEffect, useState, RefObject,useRef } from "react";
+import { useLayoutEffect, useState, RefObject,useRef, useEffect } from "react";
 import React from "react";
-interface IUseMinimizationProps {
-  ismin: boolean;
-  limit:number;
-}
 
+
+// interface IReturnUseMinimization{
+//   menuRef:
+// }
+
+
+const OVERFLOWED = 20000;
 
 const traverse = (child:any,arr:any[])=>{
-    if(child.classList.contains('radio-group')){
+    if(child.classList.contains('radio-group') || child.classList.contains('tabSubGroup-min') || child.classList.contains('check-group') || child.classList.contains('ribbon-icon-button') || child.classList.contains('dropdown') || child.classList.contains('ribbon-tool-button')){
         arr.push(child);
     }
-    else if(child.classList.contains('check-group')){
-        arr.push(child);
-    }
-    else if(child.classList.contains('ribbon-icon-button')){
-        arr.push(child);
-    }
-    else if(child.classList.contains('dropdown')){
-        arr.push(child);
-    }
-    else if(child.classList.contains('ribbon-tool-button')){
-      arr.push(child);
-  }
-    else if(child.classList.contains('title')){
-        //nothing
-    }
-    else if(child.classList.contains('tabSubGroup-min')){
-        arr.push(child);
-    }
-    else{
+    else if(!child.classList.contains('title')){
         const cur_arr=child.children;
         let n=child.childElementCount;
         for(let i=0;i<n;i++){
@@ -37,109 +22,91 @@ const traverse = (child:any,arr:any[])=>{
     }
 }
 
+const addNewUniqClass = (element:HTMLElement,uniqNumber:number)=>{
+  for(let i=element.classList.length-1;i>=0;i--){
+    if(element.classList[i].startsWith('dis-')){
+      element.classList.remove(element.classList[i]);
+    }
+  }
+  element.classList.add(`dis-${uniqNumber}`);
+}
 
-const useMinimization = (ismin: boolean,limit:number):any[]  => {
+const useMinimization = (ismin: boolean,limit:number,menuWidth:number):any[]  => {
   const menuRef = useRef<HTMLDivElement>(null);
   
-    const [hiddenEls, setHiddenEles] = useState<any[]>([]);
-    const [extraElements,setExtraElements]= useState<any[]>([]);
-    const [isExpanderReq, setIsExpReg] = useState<boolean>(false);
+    const [overflowedEls, setOverflowedEls] = useState<HTMLElement[]>([]);
+    const [partialOverflowed,setPartialOverflowed]= useState<HTMLElement[]>([]);
+    const [isExpanded, setIsExpanded] = useState<boolean>(false);
     const [needed,setNeeded] = useState<any>(null);
-    const cnt=useRef(1);
-
-    const changeClass=(element:any)=>{
-      if(element.classList.contains('radio-group')){
-        for(let i=element.classList.length-1;i>=0;i--){
-          if(element.classList[i].startsWith('dis-')){
-            element.classList.remove(element.classList[i]);
-          }
-        }
-        element.classList.add(`dis-${cnt.current}`);
-        cnt.current++;
+    const countForUniqClass=useRef<number>(1);
+    
+    const changeClass=(element:HTMLElement)=>{
+      if(element.classList.contains('radio-group') || element.classList.contains('check-group')){
+        addNewUniqClass(element,countForUniqClass.current);
+        countForUniqClass.current++;
       }
-      else if(element.classList.contains('check-group')){
-        for(let i=element.classList.length-1;i>=0;i--){
-          if(element.classList[i].startsWith('dis-')){
-            element.classList.remove(element.classList[i]);
-          }
-        }
-        element.classList.add(`dis-${cnt.current}`);
-        cnt.current++;
-      } 
-      else if(element.classList.contains('ribbon-sub-group')){
+      else if(element.classList.contains('ribbon-sub-group') || element.classList.contains('group')){
         let n=element.childElementCount;
         let arr=element.children;
         for(let i=0;i<n;i++){
-            changeClass(arr[i]);
+            changeClass(arr[i] as HTMLElement);
         }
       }
-      else if(element.classList.contains('group')){
-        let n=element.childElementCount;
-        let arr=element.children;
-        for(let i=0;i<n;i++){
-            changeClass(arr[i]);
-        }
-      }
+ 
     }
 
     useLayoutEffect(() => {
       if (menuRef.current && ismin) {
         let aggWidth = 0;
-        let portalElements: HTMLElement[] = [];
-        let indiv_ele:any[] =[];
-        const screenWidth = (document.querySelector('.content-holder') as HTMLElement).offsetWidth;
-        let range=screenWidth-100;
-        let temp =menuRef.current.cloneNode(true);
-        // if(limit>=0){
-        //   range=limit;
-        // }
+        let portalElements: HTMLElement[] = [];    // these are grouped elements that are removed from dom
+        let partialOver:HTMLElement[] =[];          // these are partial elements from a group that are removed from dom
+        // const screenWidth = (document.querySelector('.content-holder') as HTMLElement).offsetWidth;
+        let range=menuWidth-100;
+        if(limit>=0){
+          range=limit;
+        }
 
-        // const arr=menuRef.current.children;
-        // React.Children.map(menuRef.current,(ele:any,idx:any)=>{
-        // })
-        
         menuRef.current.childNodes.forEach((childeNode: ChildNode) => {
           
           if (childeNode instanceof HTMLElement) {
             let excess= childeNode.querySelector('.excess-dropdown');
-            if(excess!==null ){
-                    // means it has dropdown element for expand , so we should not remove it 
-            }
-            else{
+            if(excess===null){
+              // console.log('travesing');
               const nodeWidth = childeNode.offsetWidth;
               
               let ele= childeNode.children[0] as HTMLElement;  // first element of parent
-              if(aggWidth>19000 || (aggWidth+ele.offsetWidth>range) ){
+              if(aggWidth>=OVERFLOWED-1000 || (aggWidth+ele.offsetWidth>range) ){
                   portalElements.push(childeNode);
                   // childeNode.remove();
-                  aggWidth=20000;
+                  aggWidth=OVERFLOWED;
                   changeClass(childeNode);
-                  setIsExpReg(true);
+                  setIsExpanded(true);
               }
               else if (aggWidth + nodeWidth > range) {
-                  let temp:any[]=[];
-                  traverse(childeNode,temp);
+                  let htmlElements:any[]=[];
+                  traverse(childeNode,htmlElements);
                   changeClass(childeNode);
                   let hasElement:boolean=false;
-                  for(let i=0;i<temp.length;i++){
-                      aggWidth+=temp[i].offsetWidth;
+                  for(let i=0;i<htmlElements.length;i++){
+                      aggWidth+=htmlElements[i].offsetWidth;
                       if(aggWidth>range){
-                          temp[i].remove();
-                          indiv_ele.push(temp[i]);
+                          htmlElements[i].remove();
+                          partialOver.push(htmlElements[i]);
                           hasElement=true;
                       }
                   }
-                  if(hasElement){
+                  if(hasElement){  // if its true then there is one element that has been overflowed
 
-                    indiv_ele.push(childeNode.children[childeNode.childElementCount-1]);
+                    partialOver.push(childeNode.children[childeNode.childElementCount-1] as HTMLElement);  // adding tab group title
                   }
                   // portalElements.push(childeNode);
 
                   // childeNode.remove();
-                  setIsExpReg(true);
-                  aggWidth=20000;
-              } else {
-                  setIsExpReg(false);
+                  setIsExpanded(true);
+                  aggWidth=OVERFLOWED;
+              } 
+              else{
+                setIsExpanded(false);
               }
               aggWidth = aggWidth + nodeWidth;
           }
@@ -148,20 +115,19 @@ const useMinimization = (ismin: boolean,limit:number):any[]  => {
         portalElements.forEach((to_remove:any)=>{
             to_remove.remove();
         })
-        console.log("second");
-        setHiddenEles(portalElements);
-        setExtraElements(indiv_ele);
+        setOverflowedEls(portalElements);
+        setPartialOverflowed(partialOver);
       }
       else{
         const clonedElement = menuRef.current?.cloneNode(true);   
         setNeeded(clonedElement);    // tried for copying all elements for the maximized screen , but not working
-        setHiddenEles([]);
-        setExtraElements([]);
-        setIsExpReg(false);
+        setOverflowedEls([]);
+        setPartialOverflowed([]);
+        setIsExpanded(false);
       }
       
-    }, [ismin, menuRef,limit]);
-    return [menuRef, extraElements,hiddenEls, isExpanderReq,needed ];
+    }, [ismin, menuRef.current,menuWidth,limit]);
+    return [menuRef, partialOverflowed,overflowedEls, isExpanded,needed ];
   };
   
   export default useMinimization;

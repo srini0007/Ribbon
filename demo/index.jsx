@@ -20,16 +20,18 @@ import {
     RibbonMinimize
 } from "../src/index";
 
+import {MinProvider} from "../src/context/MinContext";
+
 import "./index.less"
 import { useRef } from "react";
 
 const App = () => {
     
      const [min,setMin] = useState(false);
-     const [lim,setLim] = useState(-100);
-     window.addEventListener('resize',()=>{
-        setLim(window.innerWidth-276);
-     })
+    //  const [lim,setLim] = useState(-100);
+    //  window.addEventListener('resize',()=>{
+    //     setLim(window.innerWidth-276);
+    //  })
     
     return (
         <section className={`container-fluid`}>
@@ -37,14 +39,17 @@ const App = () => {
             <div className={`container window no-overflow`}>
                 <div style={{overflow: "auto"}}>
                     <div>
+                
+                    <MinProvider>
+
                         <RibbonMenu>
                             <RibbonTab   mode="static" label="Home"></RibbonTab>
-                            <RibbonTab  label="File" ismin={min} limit={lim} >
+                            <RibbonTab  label="File"  >
                                 <RibbonTabGroup title="Push Buttons" >
-                                    <RibbonButton ismin={min} caption="Mail" icon="mif-envelop" title="Write Mail" onClick={()=>{alert('Mail Button was Clicked!')}}/>
-                                    <RibbonButton ismin={min} caption="Share" icon="mif-share"/>
+                                    <RibbonButton caption="Mail" icon="mif-envelop" title="Write Mail" onClick={()=>{alert('Mail Button was Clicked!')}}/>
+                                    <RibbonButton caption="Share" icon="mif-share"/>
                                     <RibbonDropdown>
-                                        <RibbonButton ismin={min} caption="Apps" icon="mif-apps" title="Applications"/>
+                                        <RibbonButton caption="Apps" icon="mif-apps" title="Applications"/>
                                         <RibbonDropdownMenu>
                                             <RibbonDropdownItem caption="Windows 10" onClick={(e)=>{console.log(e)}}/>
                                             <RibbonDropdownItem caption="Windows 11"/>
@@ -68,7 +73,7 @@ const App = () => {
                                 </RibbonTabGroup>
 
                                 <RibbonTabGroup title="Icon and Tool buttons">
-                                    <RibbonTabSubGroup ismin={min}  style={{width: '70px'}}>
+                                    <RibbonTabSubGroup   style={{width: '70px'}}>
                                         <RibbonIconButton  caption="Mail" icon="mif-envelop"/>
                                         <RibbonIconButton caption="Share" icon="mif-share"/>
                                         <RibbonDropdown>
@@ -83,7 +88,7 @@ const App = () => {
 
                                     {/* <RibbonTabDivider/> */}
 
-                                    <RibbonTabSubGroup ismin={min} style={{display: "flex", flexFlow: "row wrap", width: "74px"}}>
+                                    <RibbonTabSubGroup  style={{display: "flex", flexFlow: "row wrap", width: "74px"}}>
                                         <RibbonToolButton caption="Mail" icon="mif-mail" >
                                         </RibbonToolButton>
                                         <RibbonToolButton caption="Share" icon="mif-share"/>
@@ -104,7 +109,7 @@ const App = () => {
 
                                 <RibbonTabGroup title="Button Groups">
 
-                                    <RibbonButtonGroup  radio ismin={min}    style={{width: "200px", maxHeight: "88px", }}>
+                                    <RibbonButtonGroup notDropdownGroup radio   style={{width: "200px", maxHeight: "88px", }}>
                                         <RibbonIconButton caption="List" icon="mif-list" />
                                         <RibbonIconButton caption="Gear" icon="mif-cog"/>
                                         <RibbonIconButton caption="Barcode" icon="mif-barcode"/>
@@ -113,7 +118,7 @@ const App = () => {
                                         <RibbonIconButton caption="Calculator" icon="mif-calculator2"/>
                                     </RibbonButtonGroup>
                                     
-                                    <RibbonButtonGroup ismin={min} active={[1, 3]} style={{width: "74px", display: "flex", flexFlow: "row", justifyContent: "center"}}>
+                                    <RibbonButtonGroup notDropdownGroup active={[1, 3]} style={{width: "74px", display: "flex", flexFlow: "row", justifyContent: "center"}}>
                                         <RibbonToolButton  caption="Italic" icon="mif-italic" title="Set italic text"/>
                                         <RibbonToolButton onClick={()=>alert("his")} caption="Bold" icon="mif-bold"/>
                                         <RibbonToolButton caption="Underline" icon="mif-underline" hotkey="ctrl+h"/>
@@ -140,7 +145,7 @@ const App = () => {
                                     </RibbonDropdown>
                                 </RibbonTabGroup>
                                 <RibbonTabGroup title="Icon and Tool buttons">
-                                    <RibbonTabSubGroup ismin={min}  style={{width: '70px'}}>
+                                    <RibbonTabSubGroup  style={{width: '70px'}}>
                                         <RibbonIconButton  caption="Mail" icon="mif-envelop"/>
                                         <RibbonIconButton caption="Share" icon="mif-share"/>
                                         <RibbonDropdown>
@@ -155,7 +160,7 @@ const App = () => {
 
                                     {/* <RibbonTabDivider/> */}
 
-                                    <RibbonTabSubGroup ismin={min} style={{display: "flex", flexFlow: "row wrap", width: "74px"}}>
+                                    <RibbonTabSubGroup  style={{display: "flex", flexFlow: "row wrap", width: "74px"}}>
                                         <RibbonToolButton caption="Mail" icon="mif-mail" >
                                         </RibbonToolButton>
                                         <RibbonToolButton caption="Share" icon="mif-share"/>
@@ -172,10 +177,10 @@ const App = () => {
                                             </RibbonDropdownMenu>
                                         </RibbonDropdown>
                                     </RibbonTabSubGroup>
-                                    <RibbonButton ismin={min} caption="Mail" icon="mif-envelop" title="Write Mail" onClick={()=>{alert('Mail Button was Clicked!')}}/>
+                                    <RibbonButton  caption="Mail" icon="mif-envelop" title="Write Mail" onClick={()=>{alert('Mail Button was Clicked!')}}/>
 
                                 </RibbonTabGroup>
-                                    <RibbonMinimize isMinimized={min} onClick={()=>setMin(prev=>!prev)}/>
+                                    <RibbonMinimize />
                             </RibbonTab>
                             <RibbonTab label="Edit">
 
@@ -183,6 +188,9 @@ const App = () => {
                             </RibbonTab>
                             <RibbonTab label="View"></RibbonTab>
                         </RibbonMenu>
+                        </MinProvider>
+                    
+
                     </div>
                 </div>
             </div>

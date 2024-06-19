@@ -5,6 +5,9 @@ import { IRibbonTabGroupProps } from './TabGroup';
 import { RibbonDropdown, RibbonDropdownDivider, RibbonDropdownItem, RibbonDropdownMenu, RibbonIconButton } from '..';
 import RibbonExpandView from '../Expanded/RibbonExpandView';
 import { FC } from 'react';
+import react from '@vitejs/plugin-react';
+import parse from 'html-react-parser';
+import useMin from '../../hooks/useMin';
 export interface IRibbonTabProps {
   active?: boolean;
   className?: string;
@@ -13,9 +16,16 @@ export interface IRibbonTabProps {
   children?: React.ReactNode;
   ismin?: boolean;
   limit?:number;
+  menuWidth:number,
 }
 
-const revert=(element:any)=>{
+enum Dropdown{
+  Dropdown=2,
+  noDropdown=1,
+}
+
+
+const revertClassName=(element:HTMLElement)=>{
     // console.log(element,'as');
     if(element.dataset.original==='tabSubGroup'){
         if(element.classList.contains('tabSubGroup-min')){
@@ -25,7 +35,7 @@ const revert=(element:any)=>{
         let arr=element.children;
         let n= element.childElementCount;
         for(let i=0;i<n;i++){
-            revert(arr[i]);
+            revertClassName(arr[i] as HTMLElement);
         }
     }
     else if(element.dataset.original==='button'){
@@ -35,7 +45,7 @@ const revert=(element:any)=>{
         }
     }
     else if(element.classList.contains('dropdown')){
-        let firstEle = element.firstChild;
+        let firstEle = element.firstChild as HTMLElement;
         if(firstEle.dataset.original==='button'){
             if(firstEle.classList.contains('ribbon-icon-button')){
                 firstEle.classList.remove('ribbon-icon-button');
@@ -50,120 +60,113 @@ const revert=(element:any)=>{
         let n=element.childElementCount;
         let arr=element.children;
         for(let i=0;i<n;i++){
-            revert(arr[i]);
+            revertClassName(arr[i] as HTMLElement);
         }
     }
 }
 
 
-const reAddition = (extraElements:any[],hiddenEls:any[],menuRef:any)=>{
-    console.log("first",extraElements,hiddenEls);
-    extraElements.forEach((el: any) => {
+const reAddition = (partialOverflowed:any[],overflowedEls:any[],menuRef:any)=>{
+    partialOverflowed.forEach((el: any) => {
         // console.log(d,d.children[menuRef.current.childElementCount -hasDropdown - 2 -1],"deb");
         if (menuRef.current?.children[menuRef.current.childElementCount  - 2 -1]) {
           menuRef.current.children[menuRef.current.childElementCount  - 2-1].appendChild(el);
         }
     });
-    let hasDropdown=2;
+    let val = Dropdown.Dropdown;
     if(menuRef.current.children[menuRef.current.childElementCount-2]?.classList.contains('group')){  // if its true , its not having dropdown
-      hasDropdown=1;
+      val=Dropdown.noDropdown;
     }
-    hiddenEls.forEach((el: any) => {
+    overflowedEls.forEach((el: any) => {
       if (menuRef.current) {
-        menuRef.current.insertBefore(el,menuRef.current.children[menuRef.current.childElementCount  -hasDropdown ]);
+        menuRef.current.insertBefore(el,menuRef.current.children[menuRef.current.childElementCount  -val ]);
       }
     }); 
 }
 
-const findUniqClass=(element:any,match_class:string,ind:number)=>{
+const modifyOptionsUsingUniqClass=(element:any,matchClass:string,index:number)=>{
   if(element.classList.contains('radio-group')){
-    if(element.classList.contains(match_class)){
-      let arr:HTMLElement[]=Array.from(element.children);
-      for(let i=0;i<arr.length;i++){
-        let cur= arr[i];
+    if(element.classList.contains(matchClass)){
+      let removeClass:HTMLElement[]=Array.from(element.children);
+      for(let i=0;i<removeClass.length;i++){
+        let cur= removeClass[i];
         if(cur.classList.contains('active')){
           cur.classList.remove('active');
         }
       }
-      element.children[ind-1].classList.add('active');
+      element.children[index-1].classList.add('active');
     }
   }
   else if(element.classList.contains('check-group')){
-    if(element.classList.contains(match_class)){
+    if(element.classList.contains(matchClass)){
       
-      if(element.children[ind-1].classList.contains('active')){
-        element.children[ind-1].classList.remove('active')
+      if(element.children[index-1].classList.contains('active')){
+        element.children[index-1].classList.remove('active')
       }
       else{
-        element.children[ind-1].classList.add('active')
+        element.children[index-1].classList.add('active')
 
       }
     }
   } 
-  else if(element.classList.contains('ribbon-sub-group')){
-    let n=element.childElementCount;
-    let arr=element.children;
-    for(let i=0;i<n;i++){
-        findUniqClass(arr[i],match_class,ind);
+  else if(element.classList.contains('ribbon-sub-group') || element.classList.contains('group')){
+    for(let i=0;i<element.childElementCount;i++){
+        modifyOptionsUsingUniqClass(element.children[i],matchClass,index);
     }
   }
-  else if(element.classList.contains('group')){
-    let n=element.childElementCount;
-        let arr=element.children;
-        for(let i=0;i<n;i++){
-            findUniqClass(arr[i],match_class,ind);
-        }
-  }
+  
 }
 
-const RibbonTab: FC< IRibbonTabProps>=({ active, className, children, ismin = false,limit =-1} )=> {
+const RibbonTab: FC< IRibbonTabProps>=({ active, className, children,limit =-1,menuWidth} )=> {
     const classes = classNames('ribbon-section', className, { active });
+    const {ismin} = useMin();
       useLayoutEffect(()=>{
         if(ismin){
-            reAddition(extraElements,hiddenEls,menuRef);
+            reAddition(partialOverflowed,overflowedEls,menuRef);
         }
-      },[limit,ismin])
-    const [menuRef,extraElements, hiddenEls, isExpanderReq] = useMinimization(ismin,limit);
+      },[limit,ismin,menuWidth])
+    const [menuRef,partialOverflowed, overflowedEls, isExpanded] = useMinimization(ismin,limit,menuWidth);
     
     useLayoutEffect(() => {
        
         if(!ismin ){
-            extraElements.forEach((ele:any)=>{
-                revert(ele);
+            partialOverflowed.forEach((ele:any)=>{
+                revertClassName(ele);
             })
-            hiddenEls.forEach((ele:any)=>{
-                revert(ele);
+            overflowedEls.forEach((ele:any)=>{
+                revertClassName(ele);
             })
         }
         if (!ismin) {
-            reAddition(extraElements,hiddenEls,menuRef);
+            reAddition(partialOverflowed,overflowedEls,menuRef);
         }
         
-      }, [ismin, hiddenEls,extraElements,isExpanderReq]);
+      }, [ismin, overflowedEls,partialOverflowed,isExpanded]);
      
-    const newDiv= document.createElement('div');   // for conversion , i need to have a parent element at atleast one level
-    extraElements.forEach((element:any)=>{
-      newDiv.appendChild(element);
+    const parentWrap= document.createElement('div');   // for conversion , we need to have a parent element at atleast one level
+    partialOverflowed.forEach((element:any)=>{
+      parentWrap.appendChild(element);
     })
+
     const handleChange=(e:any)=>{
-      if(e.target.nodeName==='A'){
+      if(e.target.nodeName==='A'){    // tag name 
         let parentEle = e.target.parentElement.parentElement;
-        let unique_class=null;
+        let uniqueClass=null;
         for(let i=0;i<parentEle.classList.length;i++){
           if(parentEle.classList[i].startsWith('dis-')){
-            unique_class=parentEle.classList[i];
+            uniqueClass=parentEle.classList[i];
           }
         }
         let index = e.target.parentElement.getAttribute('index');
-        if(unique_class===null){
+        if(uniqueClass===null){
           return;
         }
-        extraElements.forEach((ele:any)=>{
-          findUniqClass(ele,unique_class,index);
+        partialOverflowed.forEach((ele:any)=>{
+          modifyOptionsUsingUniqClass(ele,uniqueClass,index);
 
         })
-        hiddenEls.forEach((ele:any)=>{
-          findUniqClass(ele,unique_class,index);
+        overflowedEls.forEach((ele:any)=>{
+          modifyOptionsUsingUniqClass(ele,uniqueClass,index);
         })
       }
       
@@ -173,18 +176,18 @@ const RibbonTab: FC< IRibbonTabProps>=({ active, className, children, ismin = fa
       <div ref={menuRef} className={classes}>
         {children}
 
-        {isExpanderReq &&
+        {isExpanded &&
             <RibbonDropdown >
               <RibbonIconButton className='excess-dropdown' caption='expand' />
               <RibbonDropdownMenu>
                 {
-                  extraElements.length>0 && 
+                  partialOverflowed.length>0 && 
                   <>
-                  <RibbonExpandView elements={newDiv} partial_element={true} handleChange={handleChange}/>
+                  <RibbonExpandView elements={parentWrap} partial_element={true} handleChange={handleChange}/>
                   <RibbonDropdownDivider />
                   </>
                 }
-              {hiddenEls.map((element:any,ind:number)=>(
+              {overflowedEls.map((element:any,ind:number)=>(
                   <RibbonExpandView elements={element} partial_element={false} key={ind} handleChange={handleChange}/>
               ))}
               </RibbonDropdownMenu>

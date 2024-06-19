@@ -5,99 +5,94 @@ import { RibbonDropdownDivider } from '../DropdownMenu';
 
 
 interface IExpandMore{
-    item:any
+    item:HTMLElement,
 }
 
 function ExpandMore({item}:IExpandMore) {
-    let temp;
+    let jsxElement;
     if(item.classList.contains('radio-group')){
-        let n=item.childElementCount;
-        let arr=item.children;
-        // console.log(arr);
+        // console.log(item.children);
         let active=[];
-        let cur_elements=[];
-        let func_elements:any[]=[];
+        let curElements=[];
+        let funcElements:any[]=[];
 
-        // console.log(arr,item,"ga")
-        for(let i=0;i<n;i++){
-          if(arr[i].classList.contains('active')){
+        // console.log(item.children,item,"ga")
+        for(let i=0;i<item.childElementCount;i++){
+          if(item.children[i].classList.contains('active')){
             active.push(i+1);
           }
-          cur_elements.push(arr[i]);
-          let x:any = undefined;
-          if(arr[i].dataset.onclick!=='' && arr[i].dataset.onclick!=='function () { [native code] }'){
-            // x=new Function('return '+arr[i].dataset.onclick)();
-            x=eval(arr[i].dataset.onclick);
+          curElements.push(item.children[i]);
+          let onClick:any = undefined;
+          if((item.children[i] as HTMLElement).dataset.onclick!=='' && (item.children[i] as HTMLElement).dataset.onclick!=='function () { [native code] }'){
+            // onClick=new Function('return '+item.children[i].dataset.onclick)();
+            onClick=eval((item.children[i] as HTMLElement).dataset.onclick as string);
 
           }
-          func_elements.push(x);
-          cur_elements.push(arr[i]);
+          funcElements.push(onClick);
+          curElements.push(item.children[i]);
         }
         
         let onButtonClick=undefined;
         if(item.dataset.onclick!==''){
-          onButtonClick=eval(item.dataset.onclick);
+          onButtonClick=eval(item.dataset.onclick as string);
         }  
-        temp = (
+        jsxElement = (
           <>
         <RibbonButtonGroup active={active} radio onButtonClick={onButtonClick}>
-            {cur_elements.map((cur,ind)=>(
-              <RibbonDropdownItem caption={cur.children[0].innerText} key={ind} onClick={func_elements[ind]}/>
+            {curElements.map((cur,ind)=>(
+              <RibbonDropdownItem caption={(cur.children[0] as HTMLElement).innerText} key={ind} onClick={funcElements[ind]}/>
             ))}
           </RibbonButtonGroup>
           
             </>
         )
-        return temp;
+        return jsxElement;
       }
       else if(item.classList.contains('check-group')){
-        let n=item.childElementCount;
-        let arr=item.children;
-        // console.log(arr);
         let active=[];
-        let cur_elements=[]
-        let func_elements:any[]=[];
+        let curElements=[]
+        let funcElements:any[]=[];
 
-        for(let i=0;i<n;i++){
-          if(arr[i].classList.contains('active')){
+        for(let i=0;i<item.childElementCount;i++){
+          if(item.children[i].classList.contains('active')){
             active.push(i+1);
           }
-          let x:any = undefined;
-          if(arr[i].dataset.onclick!=='' && arr[i].dataset.onclick!=='function () { [native code] }'){
-            // x=new Function('return '+arr[i].dataset.onclick)();
-            x=eval(arr[i].dataset.onclick);
+          let onClick:any = undefined;
+          if((item.children[i] as HTMLElement).dataset.onclick!=='' && (item.children[i] as HTMLElement).dataset.onclick!=='function () { [native code] }'){
+            // onClick=new Function('return '+item.children[i].dataset.onclick)();
+            onClick=eval((item.children[i] as HTMLElement).dataset.onclick as string);
 
           }
-          func_elements.push(x);
-          cur_elements.push(arr[i]);
+          funcElements.push(onClick);
+          curElements.push(item.children[i]);
           
         }
         let onButtonClick=undefined;
         if(item.dataset.onclick!==''){
-          onButtonClick=eval(item.dataset.onclick);
+          onButtonClick=eval(item.dataset.onclick as string);
         }  
         
-       temp = (<>
+       jsxElement = (<>
        <RibbonButtonGroup active={active} onButtonClick={onButtonClick}>
-            {cur_elements.map((cur,ind)=>(
-              <RibbonDropdownItem caption={cur.children[0].innerText} key={ind} onClick={func_elements[ind]}/>
+            {curElements.map((cur,ind)=>(
+              <RibbonDropdownItem caption={(cur.children[0] as HTMLElement).innerText} key={ind} onClick={funcElements[ind]}/>
             ))}
         </RibbonButtonGroup>
             </>
        )
-       return temp;
+       return jsxElement;
     
       }
       else if(item.classList.contains('divider')){
-        temp=<RibbonDropdownDivider />
-        return temp;
+        jsxElement=<RibbonDropdownDivider />
+        return jsxElement;
       }
       else{
         let func:any= undefined;
         if(item.dataset.onclick!==''){
-          func=eval(item.dataset.onclick);
+          func=eval(item.dataset.onclick as string);
         }
-        return <RibbonDropdownItem caption={item.children[0].innerText} onClick={func} />
+        return <RibbonDropdownItem caption={(item.children[0] as HTMLElement).innerText} onClick={func} />
       }
   return (
     <></>

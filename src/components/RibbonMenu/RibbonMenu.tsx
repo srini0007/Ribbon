@@ -1,8 +1,8 @@
-import React, {Children, ReactNode} from "react";
+import React, {Children, ReactNode, useEffect} from "react";
 import classNames from "classnames";
 import RibbonTabNav from "../Tabs/TabNav";
 import RibbonTab from "../Tabs/Tab";
-
+import { createRef } from "react";
 import "./RibbonMenu.less"
 
 export interface IRibbonMenuProps {
@@ -11,7 +11,8 @@ export interface IRibbonMenuProps {
 }
 
 export interface IRibbonMenuState {
-    activeTab: string
+    activeTab: string,
+    widthContainer:number,
 }
 
 class RibbonMenu extends React.Component<IRibbonMenuProps, IRibbonMenuState> {
@@ -19,8 +20,10 @@ class RibbonMenu extends React.Component<IRibbonMenuProps, IRibbonMenuState> {
     myRef
 
     state: IRibbonMenuState = {
-        activeTab: ''
+        activeTab: '',
+        widthContainer:0,
     }
+    divRef 
 
     constructor(props: IRibbonMenuProps) {
         super(props);
@@ -35,21 +38,57 @@ class RibbonMenu extends React.Component<IRibbonMenuProps, IRibbonMenuState> {
         })
 
         this.state = {
-            activeTab: tabs[staticTabs+1] ? tabs[staticTabs+1].props.label.toLowerCase() : ''
+            activeTab: tabs[staticTabs+1] ? tabs[staticTabs+1].props.label.toLowerCase() : '',
+            widthContainer:0,
         }
 
         this.myRef = React.createRef()
-
+        this.divRef=React.createRef<HTMLDivElement>();
         this.onTabClick = this.onTabClick.bind(this)
         this.windowResize = this.windowResize.bind(this)
+        
     }
 
     componentDidMount() {
-        window.addEventListener("resize", this.windowResize)
+        if(this.divRef.current){
+            // this.setState=this.divRef.current.offsetWidth;
+            this.setState({
+                widthContainer:0,
+            })
+        }
+        window.addEventListener("resize",()=>{
+         this.windowResize()
+         if(this.divRef.current){
+            if(this.state.widthContainer!==this.divRef.current.offsetWidth){
+                this.setState({
+                    widthContainer:this.divRef.current.offsetWidth,
+                })
+            }
+        }
+        });
     }
 
+    componentDidUpdate(prevProps: Readonly<IRibbonMenuProps>, prevState: Readonly<IRibbonMenuState>, snapshot?: any): void {
+
+        // window.addEventListener("resize",()=>{
+
+        //     if(this.divRef.current){
+        //         this.widthContainer=this.divRef.current.offsetWidth;
+        //     }
+        // })
+        if(this.divRef.current){
+            if(this.state.widthContainer!==this.divRef.current.offsetWidth){
+                this.setState({
+                    widthContainer:this.divRef.current.offsetWidth,
+                })
+            }
+        }
+        
+    }
     componentWillUnmount() {
         window.removeEventListener("resize", this.windowResize)
+      
+      
     }
 
     windowResize(){
@@ -96,12 +135,14 @@ class RibbonMenu extends React.Component<IRibbonMenuProps, IRibbonMenuState> {
         const { children = [] } = this.props;
         // @ts-ignore
         const { activeTab } = this.state;
+        
+        
 
         return Children.map(children, (el, index)=>{
             // @ts-ignore
             const {label, children,ismin,limit} = el.props
             return (
-                <RibbonTab limit={limit} key={index} ismin={ismin} label={label.toLowerCase()} active={activeTab === label.toLowerCase()}>
+                <RibbonTab menuWidth={this.state.widthContainer} limit={limit} key={index} ismin={ismin} label={label.toLowerCase()} active={activeTab === label.toLowerCase()}>
                     {children}
                 </RibbonTab>
             )
@@ -125,12 +166,11 @@ class RibbonMenu extends React.Component<IRibbonMenuProps, IRibbonMenuState> {
     render(){
         // @ts-ignore
         const {children, className, ...attrs} = this.props
-
+        
         const classes = classNames(
             `ribbon-menu`,
             className
         )
-
 
         return (// @ts-ignore
             <nav className={classes} {...attrs} ref={this.myRef}>
@@ -138,7 +178,7 @@ class RibbonMenu extends React.Component<IRibbonMenuProps, IRibbonMenuState> {
                     {this.renderTabs()}
                 </ul>
 
-                <div className={`content-holder`}>
+                <div ref={this.divRef} className={`content-holder`}>
                     {this.renderSections()}
                 </div>
             </nav>

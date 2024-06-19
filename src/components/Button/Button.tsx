@@ -6,6 +6,7 @@ import {Caption} from "../helpers/Caption";
 
 import "./Button.less"
 import RibbonDropdown from "../Dropdown/Dropdown";
+import useMin from "../../hooks/useMin";
 
 export interface IRibbonButtonProps {
     className?: string,
@@ -19,12 +20,12 @@ export interface IRibbonButtonProps {
     ismin?:boolean
 }
 
-const RibbonButton: FC<IRibbonButtonProps> = ({hotkey = "",title, children, className, icon, image, caption,ismin, onClick, ...rest}:IRibbonButtonProps) => {
+const RibbonButton: FC<IRibbonButtonProps> = ({hotkey = "",title, children, className, icon, image, caption, onClick, ...rest}:IRibbonButtonProps) => {
     let classes = classNames(
         "ribbon-button",
         className
     )
-
+    const {ismin} = useMin();
     if(ismin){
          classes = classNames(
             "ribbon-icon-button",
