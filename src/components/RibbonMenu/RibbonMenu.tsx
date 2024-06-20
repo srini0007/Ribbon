@@ -2,8 +2,9 @@ import React, {Children, ReactNode, useEffect} from "react";
 import classNames from "classnames";
 import RibbonTabNav from "../Tabs/TabNav";
 import RibbonTab from "../Tabs/Tab";
-import { createRef } from "react";
+import { createRef, RefObject } from 'react';
 import "./RibbonMenu.less"
+import { MinProvider } from "../../context/MinContext";
 
 export interface IRibbonMenuProps {
     children?: React.ReactNode,
@@ -17,13 +18,13 @@ export interface IRibbonMenuState {
 
 class RibbonMenu extends React.Component<IRibbonMenuProps, IRibbonMenuState> {
 
-    myRef
+    myRef : React.RefObject<HTMLElement>
+    divRef : React.RefObject<HTMLDivElement>
 
     state: IRibbonMenuState = {
         activeTab: '',
         widthContainer:0,
     }
-    divRef 
 
     constructor(props: IRibbonMenuProps) {
         super(props);
@@ -173,6 +174,8 @@ class RibbonMenu extends React.Component<IRibbonMenuProps, IRibbonMenuState> {
         )
 
         return (// @ts-ignore
+        <MinProvider>
+
             <nav className={classes} {...attrs} ref={this.myRef}>
                 <ul className={`tabs-holder`}>
                     {this.renderTabs()}
@@ -182,6 +185,7 @@ class RibbonMenu extends React.Component<IRibbonMenuProps, IRibbonMenuState> {
                     {this.renderSections()}
                 </div>
             </nav>
+        </MinProvider>
         )
     }
 }

@@ -17,7 +17,8 @@ import {
     RibbonDropdownCheckItem,
     RibbonDropdownDivider,
     RibbonSplitButton,
-    RibbonMinimize
+    RibbonMinimize,
+    RibbonToggleGroup
 } from "../src/index";
 
 import {MinProvider} from "../src/context/MinContext";
@@ -40,7 +41,7 @@ const App = () => {
                 <div style={{overflow: "auto"}}>
                     <div>
                 
-                    <MinProvider>
+                    
 
                         <RibbonMenu>
                             <RibbonTab   mode="static" label="Home"></RibbonTab>
@@ -109,20 +110,20 @@ const App = () => {
 
                                 <RibbonTabGroup title="Button Groups">
 
-                                    <RibbonButtonGroup notDropdownGroup radio   style={{width: "200px", maxHeight: "88px", }}>
+                                    <RibbonToggleGroup notDropdownGroup radio   style={{width: "200px", maxHeight: "88px", }}>
                                         <RibbonIconButton caption="List" icon="mif-list" />
                                         <RibbonIconButton caption="Gear" icon="mif-cog"/>
                                         <RibbonIconButton caption="Barcode" icon="mif-barcode"/>
                                         <RibbonIconButton caption="Bell" icon="mif-bell"/>
                                         <RibbonIconButton caption="Cast" icon="mif-cast"/>
                                         <RibbonIconButton caption="Calculator" icon="mif-calculator2"/>
-                                    </RibbonButtonGroup>
+                                    </RibbonToggleGroup>
                                     
-                                    <RibbonButtonGroup notDropdownGroup active={[1, 3]} style={{width: "74px", display: "flex", flexFlow: "row", justifyContent: "center"}}>
+                                    <RibbonToggleGroup notDropdownGroup active={[1, 3]} style={{width: "74px", display: "flex", flexFlow: "row", justifyContent: "center"}}>
                                         <RibbonToolButton  caption="Italic" icon="mif-italic" title="Set italic text"/>
                                         <RibbonToolButton onClick={()=>alert("his")} caption="Bold" icon="mif-bold"/>
                                         <RibbonToolButton caption="Underline" icon="mif-underline" hotkey="ctrl+h"/>
-                                    </RibbonButtonGroup>
+                                    </RibbonToggleGroup>
 
                                     <RibbonIconButton caption="Gear" icon="mif-cog" onClick={()=>alert("hi")}/>
                                     <RibbonDropdown>
@@ -188,7 +189,6 @@ const App = () => {
                             </RibbonTab>
                             <RibbonTab label="View"></RibbonTab>
                         </RibbonMenu>
-                        </MinProvider>
                     
 
                     </div>
